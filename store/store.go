@@ -4,22 +4,23 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/danilotadeu/pismo/store/account"
-	"github.com/danilotadeu/pismo/store/transaction"
+	"github.com/danilotadeu/star_wars/store/film"
+	"github.com/danilotadeu/star_wars/store/planet"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//Container ...
+// Container ...
 type Container struct {
-	Account     account.Store
-	Transaction transaction.Store
+	Planet planet.Store
+	Film   film.Store
 }
 
-//Register store container
+// Register store container
 func Register(db *sql.DB) *Container {
 	container := &Container{
-		Account:     account.NewStore(db),
-		Transaction: transaction.NewStore(db),
+		Planet: planet.NewStore(db),
+		Film:   film.NewStore(db),
 	}
 
 	log.Println("Registered -> Store")

@@ -1,0 +1,38 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS `planet` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `climate` VARCHAR(45) NOT NULL,
+  `terrain` VARCHAR(45) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `deleted_at` TIMESTAMP NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
+
+CREATE TABLE IF NOT EXISTS `film` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `director` VARCHAR(100) NOT NULL,
+  `release_date` TIMESTAMP NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `film_id_UNIQUE` (`id` ASC) VISIBLE);
+
+CREATE TABLE IF NOT EXISTS `film_planet` (
+  `planet_id` INT NOT NULL,
+  `film_id` INT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `deleted_at` TIMESTAMP NULL DEFAULT NULL,
+  CONSTRAINT `planet_fk`
+    FOREIGN KEY (`planet_id`)
+    REFERENCES `planet` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `film_fk`
+    FOREIGN KEY (`film_id`)
+    REFERENCES `film` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);  
+
+COMMIT;

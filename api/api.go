@@ -6,28 +6,25 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/danilotadeu/pismo/api/account"
-	"github.com/danilotadeu/pismo/api/transaction"
-	"github.com/danilotadeu/pismo/app"
+	"github.com/danilotadeu/star_wars/api/planet"
+	"github.com/danilotadeu/star_wars/app"
 	"github.com/gofiber/fiber/v2"
 )
 
-//Register ...
+// Register ...
 func Register(apps *app.Container) *fiber.App {
 	fiberRoute := fiber.New()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
-		_ = <-c
+		<-c
 		fmt.Println("Gracefully shutting down...")
 		_ = fiberRoute.Shutdown()
 	}()
 
-	// Accounts
-	account.NewAPI(fiberRoute.Group("/accounts"), apps)
-	// Transactions
-	transaction.NewAPI(fiberRoute.Group("/transactions"), apps)
+	// Planets
+	planet.NewAPI(fiberRoute.Group("/planets"), apps)
 
 	log.Println("Registered -> Api")
 	return fiberRoute

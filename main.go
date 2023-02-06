@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	serverInit "github.com/danilotadeu/pismo/server"
+	serverInit "github.com/danilotadeu/star_wars/server"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )

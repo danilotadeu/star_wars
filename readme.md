@@ -1,4 +1,4 @@
-# Pismo Transactions #
+# star_wars Transactions #
 
 - Service to manage accounts and transactions.
 

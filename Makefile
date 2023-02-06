@@ -28,7 +28,7 @@ test/cov:
 	go tool cover -html=cover_api.out
 
 migrateup:
-	migrate -path db_pismo/db/migration -database "mysql://go_test:pismo123@tcp(localhost:3306)/pismo?multiStatements=true" -verbose up
+	migrate -path db_star_wars/db/migration -database "mysql://go_test:star_wars123@tcp(localhost:3306)/star_wars?multiStatements=true" -verbose up
 
 migratedown:
-	migrate -path db_pismo/db/migration -database "mysql://go_test:pismo123@tcp(localhost:3306)/pismo?multiStatements=true" -verbose down
+	migrate -path db_star_wars/db/migration -database "mysql://go_test:star_wars123@tcp(localhost:3306)/star_wars?multiStatements=true" -verbose down 1

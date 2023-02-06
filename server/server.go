@@ -7,15 +7,16 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/danilotadeu/pismo/api"
-	"github.com/danilotadeu/pismo/app"
-	"github.com/danilotadeu/pismo/store"
+	"github.com/danilotadeu/star_wars/api"
+	"github.com/danilotadeu/star_wars/app"
+	"github.com/danilotadeu/star_wars/store"
 	"github.com/gofiber/fiber/v2"
 )
 
 // Server is a interface to define contract to server up
 type Server interface {
 	Start()
+	ConnectDatabase() *sql.DB
 }
 
 type server struct {
@@ -31,7 +32,7 @@ func New() Server {
 }
 
 func (e *server) Start() {
-	e.Db = connectDatabase()
+	e.Db = e.ConnectDatabase()
 	e.Store = store.Register(e.Db)
 	e.App = app.Register(e.Store)
 	e.Fiber = api.Register(e.App)
@@ -39,7 +40,7 @@ func (e *server) Start() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
-		_ = <-c
+		<-c
 		fmt.Println("Gracefully shutting down...")
 		_ = e.Fiber.Shutdown()
 		_ = e.Db.Close()
@@ -48,8 +49,8 @@ func (e *server) Start() {
 	e.Fiber.Listen(":" + os.Getenv("PORT"))
 }
 
-func connectDatabase() *sql.DB {
-	connectionMysql := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_DATABASE"))
+func (e *server) ConnectDatabase() *sql.DB {
+	connectionMysql := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true&parseTime=true", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_DATABASE"))
 	db, err := sql.Open("mysql", connectionMysql)
 	if err != nil {
 		panic(err)
