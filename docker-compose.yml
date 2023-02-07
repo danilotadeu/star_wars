@@ -1,21 +1,13 @@
 version: '3'
 services:
 
-  db:
-    image: mariadb:10.5.8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: star_wars
-      MYSQL_USER: go_test
-      MYSQL_PASSWORD: star_wars123
-    command: --init-file /data/application/init.sql
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./init.sql:/data/application/init.sql
+  mysql:
+    image: mysql:8
+    restart: always
     ports:
       - 3306:3306
-
-volumes:
-  db-data:
-    driver: local
+    environment:
+      MYSQL_DATABASE: star_wars
+      MYSQL_ROOT_PASSWORD: kgc1MGtg6DWXRN6h6SmM
+      MYSQL_USER: luke
+      MYSQL_PASSWORD: xQlpKD95kp20Wa1JAX6O
