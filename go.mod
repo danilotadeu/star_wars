@@ -7,12 +7,12 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/golang/mock v1.6.0
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.0
 )
 
 require (
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/jmoiron/sqlx v1.3.5 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect

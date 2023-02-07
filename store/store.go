@@ -17,10 +17,10 @@ type Container struct {
 }
 
 // Register store container
-func Register(db *sql.DB) *Container {
+func Register(db *sql.DB, urlStarWars string) *Container {
 	container := &Container{
-		Planet: planet.NewStore(db),
-		Film:   film.NewStore(db),
+		Planet: planet.NewStore(db, urlStarWars),
+		Film:   film.NewStore(db, urlStarWars),
 	}
 
 	log.Println("Registered -> Store")

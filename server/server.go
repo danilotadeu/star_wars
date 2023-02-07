@@ -33,7 +33,7 @@ func New() Server {
 
 func (e *server) Start() {
 	e.Db = e.ConnectDatabase()
-	e.Store = store.Register(e.Db)
+	e.Store = store.Register(e.Db, os.Getenv("URL_STARWARS_API"))
 	e.App = app.Register(e.Store)
 	e.Fiber = api.Register(e.App)
 

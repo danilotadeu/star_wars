@@ -27,13 +27,15 @@ type Store interface {
 }
 
 type storeImpl struct {
-	db *sql.DB
+	db          *sql.DB
+	urlStarWars string
 }
 
 // NewApp init a planet
-func NewStore(db *sql.DB) Store {
+func NewStore(db *sql.DB, urlStarWars string) Store {
 	return &storeImpl{
-		db: db,
+		db:          db,
+		urlStarWars: urlStarWars,
 	}
 }
 
@@ -44,7 +46,7 @@ func (a *storeImpl) GetPlanets(ctx context.Context) ([]planetModel.ResultPlanet,
 
 	for {
 		client := &http.Client{}
-		url := "https://swapi.dev/api/planets"
+		url := a.urlStarWars + "/planets"
 
 		if page > 1 {
 			url += "/?page=" + strconv.Itoa(page)

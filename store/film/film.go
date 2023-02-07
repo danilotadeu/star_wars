@@ -27,13 +27,15 @@ type Store interface {
 }
 
 type storeImpl struct {
-	db *sql.DB
+	db          *sql.DB
+	urlStarWars string
 }
 
 // NewApp init a film
-func NewStore(db *sql.DB) Store {
+func NewStore(db *sql.DB, urlStarWars string) Store {
 	return &storeImpl{
-		db: db,
+		db:          db,
+		urlStarWars: urlStarWars,
 	}
 }
 
@@ -41,10 +43,10 @@ func NewStore(db *sql.DB) Store {
 func (a *storeImpl) GetFilms(ctx context.Context, films []string) ([]filmModel.ResultFilm, error) {
 	var resultsFilm []filmModel.ResultFilm
 	for _, film := range films {
-		id := strings.Split(film, "https://swapi.dev/api/films/")[1]
+		id := strings.Split(film, a.urlStarWars+"/films/")[1]
 
 		client := &http.Client{}
-		url := "https://swapi.dev/api/films/" + strings.TrimRight(id, "/")
+		url := a.urlStarWars + "/films/" + strings.TrimRight(id, "/")
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {

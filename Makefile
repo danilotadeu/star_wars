@@ -1,20 +1,17 @@
-## start migration
+include .env
 export
 
-## end 
+install:
+	go install github.com/golang/mock/mockgen@latest
+	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
+	go get
 
-VERSION = $(shell git branch --show-current)
+run:
+	go run main.go
 
-help:  ## show this help
-	@echo "usage: make [target]"
-	@echo ""
-	@egrep "^(.+)\:\ .*##\ (.+)" ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
-
-run: ## run it will instance server 
-	VERSION=$(VERSION) go run main.go
-
-run-watch: ## run-watch it will instance server with reload
-	VERSION=$(VERSION) nodemon --exec go run main.go --signal SIGTERM
+import:
+	go run imports/init.go
 
 .PHONY: mock
 mock:
@@ -22,13 +19,14 @@ mock:
 
 .PHONY: test/cov
 test/cov:
-	go test --cover -coverpkg=./app/...  ./... -coverprofile=cover_app.out
-	go test --cover -coverpkg=./api/...  ./... -coverprofile=cover_api.out
-	go tool cover -html=cover_app.out
-	go tool cover -html=cover_api.out
+	go test ./... -coverprofile=coverage.out
+	go tool cover -html=coverage.out
+
+test:
+	go test ./...
 
 migrateup:
-	migrate -path db_star_wars/db/migration -database "mysql://go_test:star_wars123@tcp(localhost:3306)/star_wars?multiStatements=true" -verbose up
+	migrate -path db/migrations -database ${MIGRATE_URL} -verbose up
 
 migratedown:
-	migrate -path db_star_wars/db/migration -database "mysql://go_test:star_wars123@tcp(localhost:3306)/star_wars?multiStatements=true" -verbose down 1
+	migrate -path db/migrations -database ${MIGRATE_URL} -verbose down 1

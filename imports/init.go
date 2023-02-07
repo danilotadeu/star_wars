@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/danilotadeu/star_wars/app"
 	"github.com/danilotadeu/star_wars/server"
@@ -17,7 +18,7 @@ func main() {
 	}
 	server := server.New()
 	db := server.ConnectDatabase()
-	store := store.Register(db)
+	store := store.Register(db, os.Getenv("URL_STARWARS_API"))
 	app := app.Register(store)
 
 	err = app.Planet.CreatePlanetsAndFilms(context.Background())
