@@ -28,13 +28,25 @@ func NewAPI(g fiber.Router, apps *app.Container) {
 	g.Delete("/:planetId", api.planetDelete)
 }
 
+// ShowPlanet godoc
+// @Summary      Show a planet
+// @Description  get planet by ID
+// @Tags         planets
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Planet ID"
+// @Success      200  {object}  planetModel.PlanetDB
+// @Failure      400  {object}  errorsP.ErrorsResponse
+// @Failure      404  {object}  errorsP.ErrorsResponse
+// @Failure      500  {object}  errorsP.ErrorsResponse
+// @Router       /planets/{id} [get]
 func (p *apiImpl) planet(c *fiber.Ctx) error {
 	planetId := c.Params("planetId")
 	iplanetId, err := strconv.ParseInt(planetId, 10, 64)
 	if err != nil {
 		log.Println("api.planet.planet.ParseInt", err.Error())
-		return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-			Message: "Por favor tente mais tarde...",
+		return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
+			Message: "Por favor envie o id",
 		})
 	}
 
@@ -48,20 +60,32 @@ func (p *apiImpl) planet(c *fiber.Ctx) error {
 			})
 		}
 		return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-			Message: "Por favor tente mais tarde...",
+			Message: "Aconteceu um erro interno..",
 		})
 	}
 
 	return c.Status(http.StatusOK).JSON(planet)
 }
 
+// DeletePlanet godoc
+// @Summary      Delete a planet
+// @Description  delete planet by ID
+// @Tags         planets
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Planet ID"
+// @Success      204
+// @Failure      400  {object}  errorsP.ErrorsResponse
+// @Failure      404  {object}  errorsP.ErrorsResponse
+// @Failure      500  {object}  errorsP.ErrorsResponse
+// @Router       /planets/{id} [delete]
 func (p *apiImpl) planetDelete(c *fiber.Ctx) error {
 	planetId := c.Params("planetId")
 	iplanetId, err := strconv.ParseInt(planetId, 10, 64)
 	if err != nil {
 		log.Println("api.planet.planetDelete.ParseInt", err.Error())
-		return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-			Message: "Por favor tente mais tarde...",
+		return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
+			Message: "Por favor envie o id",
 		})
 	}
 
@@ -75,13 +99,26 @@ func (p *apiImpl) planetDelete(c *fiber.Ctx) error {
 			})
 		}
 		return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-			Message: "Por favor tente mais tarde...",
+			Message: "Aconteceu um erro interno..",
 		})
 	}
 
-	return c.Status(http.StatusOK).JSON(true)
+	return c.Status(http.StatusNoContent).JSON(true)
 }
 
+// ListPlanets godoc
+// @Summary      List planets
+// @Description  get planets
+// @Tags         planets
+// @Accept       json
+// @Produce      json
+// @Param page query int false "page"
+// @Param limit query int false "limit"
+// @Success      200  {object}  []planetModel.PlanetDB
+// @Failure      400  {object}  errorsP.ErrorsResponse
+// @Failure      404  {object}  errorsP.ErrorsResponse
+// @Failure      500  {object}  errorsP.ErrorsResponse
+// @Router       /planets [get]
 func (p *apiImpl) planets(c *fiber.Ctx) error {
 	ctx := c.Context()
 
@@ -91,8 +128,8 @@ func (p *apiImpl) planets(c *fiber.Ctx) error {
 		limitConv, err := strconv.ParseInt(limit, 10, 64)
 		if err != nil {
 			log.Println("api.planet.planet.ParseInt.limit", err.Error())
-			return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-				Message: "Por favor tente mais tarde...",
+			return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
+				Message: "Por favor envie o limit corretamente.",
 			})
 		}
 		ilimit = limitConv
@@ -105,8 +142,8 @@ func (p *apiImpl) planets(c *fiber.Ctx) error {
 		pageConv, err := strconv.ParseInt(page, 10, 64)
 		if err != nil {
 			log.Println("api.planet.planet.ParseInt.page", err.Error())
-			return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-				Message: "Por favor tente mais tarde...",
+			return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
+				Message: "Por favor envie o page corretamente.",
 			})
 		}
 		ipage = pageConv

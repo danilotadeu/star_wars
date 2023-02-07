@@ -10,7 +10,6 @@ import (
 	"github.com/danilotadeu/star_wars/api"
 	"github.com/danilotadeu/star_wars/app"
 	"github.com/danilotadeu/star_wars/store"
-	"github.com/gofiber/fiber/v2"
 )
 
 // Server is a interface to define contract to server up
@@ -20,7 +19,6 @@ type Server interface {
 }
 
 type server struct {
-	Fiber *fiber.App
 	App   *app.Container
 	Store *store.Container
 	Db    *sql.DB
@@ -35,18 +33,14 @@ func (e *server) Start() {
 	e.Db = e.ConnectDatabase()
 	e.Store = store.Register(e.Db, os.Getenv("URL_STARWARS_API"))
 	e.App = app.Register(e.Store)
-	e.Fiber = api.Register(e.App)
+	api.Register(e.App, os.Getenv("PORT"))
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		<-c
-		fmt.Println("Gracefully shutting down...")
-		_ = e.Fiber.Shutdown()
 		_ = e.Db.Close()
 	}()
-
-	e.Fiber.Listen(":" + os.Getenv("PORT"))
 }
 
 func (e *server) ConnectDatabase() *sql.DB {
