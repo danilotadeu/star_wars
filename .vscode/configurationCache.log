@@ -1,1 +1,1 @@
-{"buildTargets":["help","migratedown","migrateup","mock","run","run-watch","test/cov"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
+{"buildTargets":["import","install","make","migratedown","migrateup","mock","run","test","test/cov"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

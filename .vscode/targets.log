@@ -6,11 +6,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
 
-
-# Make data base, printed on Mon Feb  6 18:37:26 2023
+# Make data base, printed on Wed Feb  8 20:50:20 2023
 
 # Variables
 
@@ -18,27 +15,30 @@ make: *** No rule to make target `all'.  Stop.
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
 ?F = $(notdir $?)
+# makefile (from `.env', line 4)
+DB_HOST = 127.0.0.1
+# makefile (from `.env', line 5)
+DB_PORT = 3306
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
- 
 # automatic
 @F = $(notdir $@)
 # makefile
 CURDIR := /Users/danilotadeuoliveirasilva/Desktop/Projects/star_wars
 # makefile
 SHELL = /bin/sh
+# makefile (from `.env', line 7)
+MIGRATE_URL = mysql://luke:xQlpKD95kp20Wa1JAX6O@tcp\(127.0.0.1:3306\)/star_wars?multiStatements=true
 # environment
 VSCODE_NLS_CONFIG = {"locale":"pt-br","availableLanguages":{"*":"pt-br"},"_languagePackId":"42116b32531a7db8af7fe109cace42ae.pt-br","_translationsConfigFile":"/Users/danilotadeuoliveirasilva/Library/Application Support/Code/clp/42116b32531a7db8af7fe109cace42ae.pt-br/tcf.json","_cacheRoot":"/Users/danilotadeuoliveirasilva/Library/Application Support/Code/clp/42116b32531a7db8af7fe109cace42ae.pt-br","_resolvedLanguagePackCoreLocation":"/Users/danilotadeuoliveirasilva/Library/Application Support/Code/clp/42116b32531a7db8af7fe109cace42ae.pt-br/e8a3071ea4344d9d48ef8a4df2c097372b0c5161","_corruptedFile":"/Users/danilotadeuoliveirasilva/Library/Application Support/Code/clp/42116b32531a7db8af7fe109cace42ae.pt-br/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/bin/make
-# makefile (from `Makefile', line 1)
-MAKEFILE_LIST :=  Makefile
+# makefile (from `.env', line 1)
+MAKEFILE_LIST :=  Makefile .env
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
-# makefile (from `Makefile', line 6)
-VERSION = $(shell git branch --show-current)
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
@@ -53,12 +53,16 @@ LSCOLORS = Gxfxcxdxbxegedabagacad
 GOPATH = /Users/danilotadeuoliveirasilva/go
 # environment
 ELECTRON_RUN_AS_NODE = 1
+# makefile (from `.env', line 1)
+PORT = 3000
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
 SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.2I4HcyWb7a/Listeners
 # automatic
 %F = $(notdir $%)
+# makefile (from `.env', line 8)
+URL_STARWARS_API = https://swapi.dev/api
 # environment
 PWD = /Users/danilotadeuoliveirasilva/Desktop/Projects/star_wars
 # environment
@@ -93,8 +97,10 @@ SHLVL = 1
 MAKE_VERSION := 3.81
 # environment
 USER = danilotadeuoliveirasilva
+# makefile (from `.env', line 6)
+DB_DATABASE = star_wars
 # makefile
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := install
 # environment
 LESS = -R
 # automatic
@@ -109,6 +115,8 @@ TMPDIR = /var/folders/80/j3wbfygn16s0ngq_ysbty9q40000gn/T/
 *F = $(notdir $*)
 # environment
 VSCODE_IPC_HOOK = /Users/danilotadeuoliveirasilva/Library/Application Support/Code/1.74.2-main.sock
+# makefile (from `.env', line 3)
+DB_PASSWORD = xQlpKD95kp20Wa1JAX6O
 # environment
 MallocNanoZone = 0
 # makefile
@@ -131,6 +139,8 @@ COMMAND_MODE = unix2003
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
+# makefile (from `.env', line 2)
+DB_USER = luke
 # environment
 PAGER = less
 # environment
@@ -148,7 +158,7 @@ LANG = C
 # environment
 VSCODE_PID = 28846
 # variable set hash-table stats:
-# Load=66/1024=6%, Rehash=0, Collisions=2/90=2%
+# Load=73/1024=7%, Rehash=0, Collisions=3/99=3%
 
 # Pattern-specific Variable Values
 
@@ -156,10 +166,9 @@ VSCODE_PID = 28846
 
 # Directories
 
- 
-# . (device 16777234, inode 8493004): 27 files, no impossibilities.
+# . (device 16777234, inode 8493004): 24 files, no impossibilities.
 
-# 27 files, no impossibilities in 1 directories.
+# 24 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -190,20 +199,35 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2023-02-05 16:03:20
+#  Last modified 2023-02-06 21:23:40
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-help:
+test:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 9):
-	@echo "usage: make [target]"
-	@echo ""
-	@egrep "^(.+)\:\ .*##\ (.+)" ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
+#  commands to execute (from `Makefile', line 26):
+	go test ./...
+	
+
+# Not a target:
+.env:
+#  Implicit rule search has been done.
+#  Last modified 2023-02-06 21:37:10
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+import:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 14):
+	go run imports/init.go
 	
 
 # Not a target:
@@ -217,43 +241,33 @@ test/cov:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 25):
-	go test --cover -coverpkg=./app/...  ./... -coverprofile=cover_app.out
-	go test --cover -coverpkg=./api/...  ./... -coverprofile=cover_api.out
-	go tool cover -html=cover_app.out
-	go tool cover -html=cover_api.out
+#  commands to execute (from `Makefile', line 22):
+	go test ./... -coverprofile=coverage.out
+	go tool cover -html=coverage.out
 	
 
 run:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 14):
-	VERSION=$(VERSION) go run main.go
-	
-
-run-watch:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  commands to execute (from `Makefile', line 17):
-	VERSION=$(VERSION) nodemon --exec go run main.go --signal SIGTERM
+#  commands to execute (from `Makefile', line 11):
+	go run main.go
 	
 
 migrateup:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 31):
-	migrate -path db_star_wars/db/migration -database "mysql://go_test:star_wars123@tcp(localhost:3306)/star_wars?multiStatements=true" -verbose up
+#  commands to execute (from `Makefile', line 29):
+	migrate -path db/migrations -database ${MIGRATE_URL} -verbose up
 	
 
 migratedown:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 34):
-	migrate -path db_star_wars/db/migration -database "mysql://go_test:star_wars123@tcp(localhost:3306)/star_wars?multiStatements=true" -verbose down 1
+#  commands to execute (from `Makefile', line 32):
+	migrate -path db/migrations -database ${MIGRATE_URL} -verbose down 1
 	
 
 mock:
@@ -261,23 +275,37 @@ mock:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 21):
+#  commands to execute (from `Makefile', line 18):
 	go generate ./...
 	
 
+install:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 5):
+	go install github.com/golang/mock/mockgen@latest
+	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
+	go get
+	
+
+ 
+make: *** No rule to make target `all'.  Stop.
+
 # files hash-table stats:
-# Load=12/1024=1%, Rehash=0, Collisions=0/27=0%
+# Load=14/1024=1%, Rehash=0, Collisions=0/30=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
 
 # No general (`VPATH' variable) search path.
 
-# # of strings in strcache: 1
+# # of strings in strcache: 2
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
-# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+# strcache free: total = 4082 / max = 4082 / min = 4082 / avg = 4082
 
-# Finished Make data base on Mon Feb  6 18:37:26 2023
+# Finished Make data base on Wed Feb  8 20:50:20 2023
 
  
