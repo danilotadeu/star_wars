@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	planetModel "github.com/danilotadeu/star_wars/model/planet"
+	"github.com/sirupsen/logrus"
 )
 
 // Store is a contract to Planet..
@@ -54,21 +54,21 @@ func (a *storeImpl) GetPlanets(ctx context.Context) ([]planetModel.ResultPlanet,
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			log.Println("store.planet.GetPlanets.newRequest", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.GetPlanets.newRequest"}).Error(err)
 			return nil, err
 		}
 		req.Header.Add("Accept", "application/json")
 		resp, err := client.Do(req)
 
 		if err != nil {
-			log.Println("store.planet.GetPlanets.Do", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.GetPlanets.Do"}).Error(err)
 			return nil, err
 		}
 
 		defer resp.Body.Close()
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Println("store.planet.GetPlanets.readAll", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.GetPlanets.readAll"}).Error(err)
 			return nil, err
 		}
 
@@ -76,7 +76,7 @@ func (a *storeImpl) GetPlanets(ctx context.Context) ([]planetModel.ResultPlanet,
 			var responsePlanet planetModel.ResultPlanet
 			err := json.Unmarshal(respBody, &responsePlanet)
 			if err != nil {
-				log.Println("store.planet.GetPlanets.jsonUnmarshal", err.Error())
+				logrus.WithFields(logrus.Fields{"trace": "store.planet.GetPlanets.jsonUnmarshal"}).Error(err)
 				return nil, err
 			}
 
@@ -98,13 +98,13 @@ func (a *storeImpl) SavePlanet(ctx context.Context, planet planetModel.Planet) (
 	res, err := a.db.Exec(query)
 
 	if err != nil {
-		log.Println("store.planet.SavePlanet.Exec", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.SavePlanet.Exec"}).Error(err)
 		return nil, err
 	}
 
 	lastId, err := res.LastInsertId()
 	if err != nil {
-		log.Println("store.planet.SavePlanet.LastInsertId", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.SavePlanet.LastInsertId"}).Error(err)
 		return nil, err
 	}
 
@@ -114,7 +114,7 @@ func (a *storeImpl) SavePlanet(ctx context.Context, planet planetModel.Planet) (
 func (a *storeImpl) GetOne(ctx context.Context, name string) (*planetModel.PlanetDB, error) {
 	res, err := a.db.Query("SELECT * FROM planet WHERE deleted_at IS NULL and name = ?", name)
 	if err != nil {
-		log.Println("store.film.GetOne.Query", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.GetOne.Query"}).Error(err)
 		return nil, err
 	}
 	defer res.Close()
@@ -130,7 +130,7 @@ func (a *storeImpl) GetOne(ctx context.Context, name string) (*planetModel.Plane
 			&planet.DeletedAt,
 		)
 		if err != nil {
-			log.Println("store.film.GetOne.Scan", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.GetOne.Scan"}).Error(err)
 			return nil, err
 		}
 
@@ -143,7 +143,7 @@ func (a *storeImpl) GetOne(ctx context.Context, name string) (*planetModel.Plane
 func (a *storeImpl) GetOneByID(ctx context.Context, id int64) (*planetModel.PlanetDB, error) {
 	res, err := a.db.Query("SELECT * FROM planet WHERE deleted_at IS NULL and id = ?", id)
 	if err != nil {
-		log.Println("store.planet.GetOneByID.Query", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.GetOneByID.Query"}).Error(err)
 		return nil, err
 	}
 	defer res.Close()
@@ -159,7 +159,7 @@ func (a *storeImpl) GetOneByID(ctx context.Context, id int64) (*planetModel.Plan
 			&planet.DeletedAt,
 		)
 		if err != nil {
-			log.Println("store.planet.GetOneByID.Scan", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.GetOneByID.Scan"}).Error(err)
 			return nil, err
 		}
 
@@ -182,7 +182,7 @@ func (a *storeImpl) GetAll(ctx context.Context, page, limit int64, name string) 
 
 	res, err := a.db.Query(query, params...)
 	if err != nil {
-		log.Println("store.planet.GetAll.Query", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.GetAll.Query"}).Error(err)
 		return nil, err
 	}
 	defer res.Close()
@@ -199,7 +199,7 @@ func (a *storeImpl) GetAll(ctx context.Context, page, limit int64, name string) 
 			&planet.DeletedAt,
 		)
 		if err != nil {
-			log.Println("store.planet.GetAll.Scan", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.GetAll.Scan"}).Error(err)
 			return nil, err
 		}
 		results = append(results, &planet)
@@ -212,25 +212,25 @@ func (a *storeImpl) Delete(ctx context.Context, id int64) error {
 	query := fmt.Sprintf("UPDATE planet SET deleted_at = '%s' WHERE id = '%d'", time.Now().Format("2006-01-02 15:04:05"), id)
 	res, err := a.db.Exec(query)
 	if err != nil {
-		log.Println("store.planet.Delete.Exec_1", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.Delete.Exec_1"}).Error(err)
 		return err
 
 	}
 	_, err = res.RowsAffected()
 	if err != nil {
-		log.Println("store.planet.Delete.RowsAffected_1", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.Delete.RowsAffected_1"}).Error(err)
 		return err
 	}
 
 	resFilmPlanet, err := a.db.Exec("UPDATE film_planet SET deleted_at = ? WHERE planet_id = ?", time.Now().Format("2006-01-02 15:04:05"), id)
 	if err != nil {
-		log.Println("store.planet.Delete.Exec_2", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.Delete.Exec_2"}).Error(err)
 		return err
 
 	}
 	_, err = resFilmPlanet.RowsAffected()
 	if err != nil {
-		log.Println("store.planet.Delete.RowsAffected_2", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.Delete.RowsAffected_2"}).Error(err)
 		return err
 	}
 

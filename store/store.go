@@ -2,10 +2,10 @@ package store
 
 import (
 	"database/sql"
-	"log"
 
 	"github.com/danilotadeu/star_wars/store/film"
 	"github.com/danilotadeu/star_wars/store/planet"
+	"github.com/sirupsen/logrus"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -23,6 +23,6 @@ func Register(db *sql.DB, urlStarWars string) *Container {
 		Film:   film.NewStore(db, urlStarWars),
 	}
 
-	log.Println("Registered -> Store")
+	logrus.WithFields(logrus.Fields{"trace": "store"}).Infof("Registered - Store")
 	return container
 }

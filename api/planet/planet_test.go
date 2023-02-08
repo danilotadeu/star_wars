@@ -30,14 +30,14 @@ func TestHandlerDelete(t *testing.T) {
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 				mockPlanetApp.EXPECT().Delete(gomock.Any(), gomock.Any()).Return(nil)
 			},
-			ExpectedStatusCode: http.StatusOK,
+			ExpectedStatusCode: http.StatusNoContent,
 		},
 		"should return error with parse int": {
 			InputParamID: "xpto",
 			ExpectedErr:  nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 			},
-			ExpectedStatusCode: http.StatusInternalServerError,
+			ExpectedStatusCode: http.StatusBadRequest,
 		},
 		"should return with planet not found": {
 			InputParamID: "1",
@@ -110,7 +110,7 @@ func TestHandlerGetPlanetByID(t *testing.T) {
 			ExpectedErr:  nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 			},
-			ExpectedStatusCode: http.StatusInternalServerError,
+			ExpectedStatusCode: http.StatusBadRequest,
 		},
 		"should return with planet not found": {
 			InputParamID: "1",
@@ -186,14 +186,14 @@ func TestHandlerGetPlanets(t *testing.T) {
 			InputPage:   "xpto",
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 			},
-			ExpectedStatusCode: http.StatusInternalServerError,
+			ExpectedStatusCode: http.StatusBadRequest,
 		},
 		"should return error with parse int limit": {
 			ExpectedErr: nil,
 			InputLimit:  "xpto",
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 			},
-			ExpectedStatusCode: http.StatusInternalServerError,
+			ExpectedStatusCode: http.StatusBadRequest,
 		},
 		"should return with planet not found": {
 			ExpectedErr: nil,

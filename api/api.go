@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 
@@ -11,6 +10,7 @@ import (
 	_ "github.com/danilotadeu/star_wars/docs"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
+	"github.com/sirupsen/logrus"
 )
 
 // @title		Star Wars API
@@ -19,10 +19,10 @@ import (
 func Register(apps *app.Container, port string) {
 	fiberRoute := fiber.New()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	gracefulShutdown := make(chan os.Signal, 1)
+	signal.Notify(gracefulShutdown, os.Interrupt)
 	go func() {
-		<-c
+		<-gracefulShutdown
 		fmt.Println("Gracefully shutting down...")
 		_ = fiberRoute.Shutdown()
 	}()
@@ -34,6 +34,6 @@ func Register(apps *app.Container, port string) {
 
 	fiberRoute.Get("/swagger/*", swagger.HandlerDefault)
 
-	log.Println("Registered -> Api")
+	logrus.WithFields(logrus.Fields{"trace": "api"}).Infof("Registered - Api")
 	fiberRoute.Listen(":" + port)
 }

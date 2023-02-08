@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
 	filmModel "github.com/danilotadeu/star_wars/model/film"
 	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
 )
 
 // Store is a contract to Film..
@@ -50,20 +50,20 @@ func (a *storeImpl) GetFilms(ctx context.Context, films []string) ([]filmModel.R
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			log.Println("store.film.GetFilms.newRequest", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilms.newRequest"}).Error(err)
 			return nil, err
 		}
 		req.Header.Add("Accept", "application/json")
 		resp, err := client.Do(req)
 
 		if err != nil {
-			log.Println("store.film.GetFilms.Do", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilms.Do"}).Error(err)
 			return nil, err
 		}
 		defer resp.Body.Close()
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Println("store.film.GetFilms.readAll", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilms.readAll"}).Error(err)
 			return nil, err
 		}
 
@@ -71,7 +71,7 @@ func (a *storeImpl) GetFilms(ctx context.Context, films []string) ([]filmModel.R
 			var responseFilm filmModel.ResultFilm
 			err := json.Unmarshal(respBody, &responseFilm)
 			if err != nil {
-				log.Println("store.film.GetFilms.jsonUnmarshal", err.Error())
+				logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilms.jsonUnmarshal"}).Error(err)
 				return nil, err
 			}
 
@@ -88,13 +88,13 @@ func (a *storeImpl) SaveFilm(ctx context.Context, film filmModel.ResultFilm) (*i
 	res, err := a.db.Exec(query)
 
 	if err != nil {
-		log.Println("store.film.SaveFilm.Exec", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.SaveFilm.Exec"}).Error(err)
 		return nil, err
 	}
 
 	lastID, err := res.LastInsertId()
 	if err != nil {
-		log.Println("store.film.SaveFilm.LastInsertId", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.SaveFilm.LastInsertId"}).Error(err)
 		return nil, err
 	}
 
@@ -107,13 +107,13 @@ func (a *storeImpl) SaveFilmWithPlanet(ctx context.Context, planetID, filmID int
 
 	res, err := a.db.Exec(query)
 	if err != nil {
-		log.Println("store.film.SaveFilmWithPlanet.Exec", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.SaveFilmWithPlanet.Exec"}).Error(err)
 		return nil, err
 	}
 
 	lastID, err := res.LastInsertId()
 	if err != nil {
-		log.Println("store.film.SaveFilmWithPlanet.LastInsertId", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.SaveFilmWithPlanet.LastInsertId"}).Error(err)
 		return nil, err
 	}
 
@@ -123,7 +123,7 @@ func (a *storeImpl) SaveFilmWithPlanet(ctx context.Context, planetID, filmID int
 func (a *storeImpl) GetOne(ctx context.Context, name string) (*filmModel.Film, error) {
 	res, err := a.db.Query("SELECT * FROM film WHERE name = ?", name)
 	if err != nil {
-		log.Println("store.film.GetOne.Query", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.GetOne.Query"}).Error(err)
 		return nil, err
 	}
 	defer res.Close()
@@ -138,7 +138,7 @@ func (a *storeImpl) GetOne(ctx context.Context, name string) (*filmModel.Film, e
 			&film.CreatedAt,
 		)
 		if err != nil {
-			log.Println("store.film.GetOne.Scan", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.film.GetOne.Scan"}).Error(err)
 			return nil, err
 		}
 
@@ -151,7 +151,7 @@ func (a *storeImpl) GetOne(ctx context.Context, name string) (*filmModel.Film, e
 func (a *storeImpl) GetFilmWithPlanet(ctx context.Context, planetID, filmID int64) (*filmModel.FilmPlanet, error) {
 	res, err := a.db.Query("SELECT * FROM film_planet WHERE planet_id = ? and film_id = ?", planetID, filmID)
 	if err != nil {
-		log.Println("store.film.GetFilmWithPlanet.Query", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilmWithPlanet.Query"}).Error(err)
 		return nil, err
 	}
 	defer res.Close()
@@ -165,7 +165,7 @@ func (a *storeImpl) GetFilmWithPlanet(ctx context.Context, planetID, filmID int6
 			&film.DeletedAt,
 		)
 		if err != nil {
-			log.Println("store.film.GetFilmWithPlanet.Scan", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilmWithPlanet.Scan"}).Error(err)
 			return nil, err
 		}
 
@@ -183,14 +183,14 @@ func (a *storeImpl) GetFilmsByPlanetIDs(ctx context.Context, planetIDs []int64) 
 						star_wars.film ON star_wars.film_planet.film_id = star_wars.film.id
 					WHERE star_wars.film_planet.planet_id IN (?);`, planetIDs)
 	if err != nil {
-		log.Println("store.film.GetFilmsByPlanetIDs.In", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilmsByPlanetIDs.In"}).Error(err)
 		return nil, err
 	}
 
 	query = sqlx.Rebind(sqlx.QUESTION, query)
 	res, err := a.db.Query(query, args...)
 	if err != nil {
-		log.Println("store.film.GetFilmsByPlanetIDs.Query", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilmsByPlanetIDs.Query"}).Error(err)
 		return nil, err
 	}
 	defer res.Close()
@@ -210,7 +210,7 @@ func (a *storeImpl) GetFilmsByPlanetIDs(ctx context.Context, planetIDs []int64) 
 			&film.Film.CreatedAt,
 		)
 		if err != nil {
-			log.Println("store.film.GetFilmsByPlanetIDs.Scan", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "store.film.GetFilmsByPlanetIDs.Scan"}).Error(err)
 			return nil, err
 		}
 

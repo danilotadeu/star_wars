@@ -1,0 +1,15 @@
+{"level":"info","msg":"Registered -\u003e Store","time":"2023-02-07T20:54:06-03:00","trace":"store"}
+{"level":"info","msg":"Registered - Store","time":"2023-02-07T20:54:17-03:00","trace":"store"}
+{"level":"info","msg":"Registered - Store","time":"2023-02-07T20:54:45-03:00","trace":"store"}
+{"level":"info","msg":"Registered - App","time":"2023-02-07T20:54:45-03:00","trace":"store"}
+{"level":"info","msg":"Registered - Store","time":"2023-02-07T20:55:10-03:00","trace":"store"}
+{"level":"info","msg":"Registered - App","time":"2023-02-07T20:55:10-03:00","trace":"app"}
+{"level":"info","msg":"Registered - Api","time":"2023-02-07T20:55:10-03:00","trace":"api"}
+{"level":"info","msg":"Registered - Store","time":"2023-02-07T21:15:31-03:00","trace":"store"}
+{"level":"info","msg":"Registered - App","time":"2023-02-07T21:15:31-03:00","trace":"app"}
+{"level":"info","msg":"Registered - Api","time":"2023-02-07T21:15:31-03:00","trace":"api"}
+{"level":"info","msg":"Registered - Store","time":"2023-02-07T21:15:55-03:00","trace":"store"}
+{"level":"info","msg":"Registered - App","time":"2023-02-07T21:15:55-03:00","trace":"app"}
+{"level":"info","msg":"Registered - Api","time":"2023-02-07T21:15:55-03:00","trace":"api"}
+{"level":"error","msg":"Planet not found","time":"2023-02-07T21:16:03-03:00","trace":"app.planet.Delete.Store.Planet.GetOneByID"}
+{"level":"error","msg":"Planet not found","time":"2023-02-07T21:16:03-03:00","trace":"api.planet.planetDelete.Delete"}

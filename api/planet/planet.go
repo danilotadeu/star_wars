@@ -3,7 +3,6 @@ package planet
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -11,6 +10,7 @@ import (
 	errorsP "github.com/danilotadeu/star_wars/model/errors_handler"
 	planetModel "github.com/danilotadeu/star_wars/model/planet"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 )
 
 type apiImpl struct {
@@ -44,7 +44,7 @@ func (p *apiImpl) planet(c *fiber.Ctx) error {
 	planetId := c.Params("planetId")
 	iplanetId, err := strconv.ParseInt(planetId, 10, 64)
 	if err != nil {
-		log.Println("api.planet.planet.ParseInt", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "api.planet.planet.ParseInt"}).Error(err)
 		return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
 			Message: "Por favor envie o id",
 		})
@@ -53,7 +53,7 @@ func (p *apiImpl) planet(c *fiber.Ctx) error {
 	ctx := c.Context()
 	planet, err := p.apps.Planet.GetOneByID(ctx, iplanetId)
 	if err != nil {
-		log.Println("api.planet.planet.GetOneByID", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "api.planet.planet.GetOneByID"}).Error(err)
 		if errors.Is(err, planetModel.ErrorPlanetNotFound) {
 			return c.Status(http.StatusNotFound).JSON(errorsP.ErrorsResponse{
 				Message: fmt.Sprintf("Planeta (%d) não encontrado", iplanetId),
@@ -83,7 +83,7 @@ func (p *apiImpl) planetDelete(c *fiber.Ctx) error {
 	planetId := c.Params("planetId")
 	iplanetId, err := strconv.ParseInt(planetId, 10, 64)
 	if err != nil {
-		log.Println("api.planet.planetDelete.ParseInt", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "api.planet.planetDelete.ParseInt"}).Error(err)
 		return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
 			Message: "Por favor envie o id",
 		})
@@ -92,7 +92,7 @@ func (p *apiImpl) planetDelete(c *fiber.Ctx) error {
 	ctx := c.Context()
 	err = p.apps.Planet.Delete(ctx, iplanetId)
 	if err != nil {
-		log.Println("api.planet.planetDelete.Delete", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "api.planet.planetDelete.Delete"}).Error(err)
 		if errors.Is(err, planetModel.ErrorPlanetNotFound) {
 			return c.Status(http.StatusNotFound).JSON(errorsP.ErrorsResponse{
 				Message: fmt.Sprintf("Planeta (%d) não encontrado", iplanetId),
@@ -127,7 +127,7 @@ func (p *apiImpl) planets(c *fiber.Ctx) error {
 	if len(limit) > 0 {
 		limitConv, err := strconv.ParseInt(limit, 10, 64)
 		if err != nil {
-			log.Println("api.planet.planet.ParseInt.limit", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "api.planet.planets.ParseInt.limit"}).Error(err)
 			return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
 				Message: "Por favor envie o limit corretamente.",
 			})
@@ -141,7 +141,7 @@ func (p *apiImpl) planets(c *fiber.Ctx) error {
 	if len(page) > 0 {
 		pageConv, err := strconv.ParseInt(page, 10, 64)
 		if err != nil {
-			log.Println("api.planet.planet.ParseInt.page", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "api.planet.planets.ParseInt.page"}).Error(err)
 			return c.Status(http.StatusBadRequest).JSON(errorsP.ErrorsResponse{
 				Message: "Por favor envie o page corretamente.",
 			})
@@ -153,7 +153,7 @@ func (p *apiImpl) planets(c *fiber.Ctx) error {
 
 	planets, err := p.apps.Planet.GetAllPlanets(ctx, ipage, ilimit, name)
 	if err != nil {
-		log.Println("api.planet.planet.GetAllPlanets", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "api.planet.planets.GetAllPlanets"}).Error(err)
 		if errors.Is(err, planetModel.ErrorPlanetNotFound) {
 			return c.Status(http.StatusNotFound).JSON(errorsP.ErrorsResponse{
 				Message: "Dados nao encontrados",

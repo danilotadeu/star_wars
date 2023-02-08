@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -10,7 +11,11 @@ import (
 	"github.com/danilotadeu/star_wars/api"
 	"github.com/danilotadeu/star_wars/app"
 	"github.com/danilotadeu/star_wars/store"
+	"github.com/sirupsen/logrus"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+const LOGS_PATH = "log/logrus.log"
 
 // Server is a interface to define contract to server up
 type Server interface {
@@ -30,15 +35,21 @@ func New() Server {
 }
 
 func (e *server) Start() {
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetOutput(io.MultiWriter(os.Stdout, &lumberjack.Logger{
+		Filename: LOGS_PATH,
+		MaxSize:  50, // megabytes
+	}))
+
 	e.Db = e.ConnectDatabase()
 	e.Store = store.Register(e.Db, os.Getenv("URL_STARWARS_API"))
 	e.App = app.Register(e.Store)
 	api.Register(e.App, os.Getenv("PORT"))
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	gracefulShutdown := make(chan os.Signal, 1)
+	signal.Notify(gracefulShutdown, os.Interrupt)
 	go func() {
-		<-c
+		<-gracefulShutdown
 		_ = e.Db.Close()
 	}()
 }

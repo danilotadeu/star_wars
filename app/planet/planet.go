@@ -2,10 +2,10 @@ package planet
 
 import (
 	"context"
-	"log"
 
 	planetModel "github.com/danilotadeu/star_wars/model/planet"
 	"github.com/danilotadeu/star_wars/store"
+	"github.com/sirupsen/logrus"
 )
 
 //go:generate mockgen -destination ../../mock/app/planet/planet_app_mock.go -package mockAppPlanet . App
@@ -32,7 +32,7 @@ func NewApp(store *store.Container) App {
 func (a *appImpl) CreatePlanetsAndFilms(ctx context.Context) error {
 	planetResults, err := a.store.Planet.GetPlanets(ctx)
 	if err != nil {
-		log.Println("app.planet.CreatePlanetsAndFilms.Store.Planet.GetPlanets", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.CreatePlanetsAndFilms.Store.Planet.GetPlanets"}).Error(err)
 		return err
 	}
 
@@ -40,7 +40,7 @@ func (a *appImpl) CreatePlanetsAndFilms(ctx context.Context) error {
 		for _, planet := range planetResult.Results {
 			planetExist, err := a.store.Planet.GetOne(ctx, planet.Name)
 			if err != nil {
-				log.Println("app.planet.CreatePlanetsAndFilms.Store.Planet.GetOne", err.Error())
+				logrus.WithFields(logrus.Fields{"trace": "app.planet.CreatePlanetsAndFilms.Store.Planet.GetOne"}).Error(err)
 				return err
 			}
 
@@ -52,14 +52,14 @@ func (a *appImpl) CreatePlanetsAndFilms(ctx context.Context) error {
 			if planetID == nil {
 				planetID, err = a.store.Planet.SavePlanet(ctx, planet)
 				if err != nil {
-					log.Println("app.planet.CreatePlanetsAndFilms.Store.Planet.SavePlanet", err.Error())
+					logrus.WithFields(logrus.Fields{"trace": "app.planet.CreatePlanetsAndFilms.Store.Planet.SavePlanet"}).Error(err)
 					return err
 				}
 			}
 
 			err = a.SaveFilms(ctx, planet.Films, *planetID)
 			if err != nil {
-				log.Println("app.planet.CreatePlanetsAndFilms.SaveFilms", err.Error())
+				logrus.WithFields(logrus.Fields{"trace": "app.planet.CreatePlanetsAndFilms.SaveFilms"}).Error(err)
 				return err
 			}
 		}
@@ -71,14 +71,14 @@ func (a *appImpl) CreatePlanetsAndFilms(ctx context.Context) error {
 func (a *appImpl) SaveFilms(ctx context.Context, films []string, planetID int64) error {
 	filmsResult, err := a.store.Film.GetFilms(ctx, films)
 	if err != nil {
-		log.Println("app.planet.SaveFilms.Store.Film.GetFilms", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.SaveFilms.Store.Film.GetFilms"}).Error(err)
 		return err
 	}
 
 	for _, film := range filmsResult {
 		filmExists, err := a.store.Film.GetOne(ctx, film.Title)
 		if err != nil {
-			log.Println("app.planet.SaveFilms.Store.Film.GetOne", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "app.planet.SaveFilms.Store.Film.GetOne"}).Error(err)
 			return err
 		}
 
@@ -88,21 +88,21 @@ func (a *appImpl) SaveFilms(ctx context.Context, films []string, planetID int64)
 		} else {
 			filmID, err = a.store.Film.SaveFilm(ctx, film)
 			if err != nil {
-				log.Println("app.planet.SaveFilms.Store.Film.SaveFilm", err.Error())
+				logrus.WithFields(logrus.Fields{"trace": "app.planet.SaveFilms.Store.Film.SaveFilm"}).Error(err)
 				return err
 			}
 		}
 
 		filmPlanet, err := a.store.Film.GetFilmWithPlanet(ctx, planetID, *filmID)
 		if err != nil {
-			log.Println("app.planet.SaveFilms.Store.Film.GetFilmWithPlanet", err.Error())
+			logrus.WithFields(logrus.Fields{"trace": "app.planet.SaveFilms.Store.Film.GetFilmWithPlanet"}).Error(err)
 			return err
 		}
 
 		if filmPlanet == nil {
 			_, err = a.store.Film.SaveFilmWithPlanet(ctx, planetID, *filmID)
 			if err != nil {
-				log.Println("app.planet.SaveFilms.Store.Film.SaveFilmWithPlanet", err.Error())
+				logrus.WithFields(logrus.Fields{"trace": "app.planet.SaveFilms.Store.Film.SaveFilmWithPlanet"}).Error(err)
 				return err
 			}
 		}
@@ -114,13 +114,13 @@ func (a *appImpl) SaveFilms(ctx context.Context, films []string, planetID int64)
 func (a *appImpl) GetOneByID(ctx context.Context, planetID int64) (*planetModel.PlanetDB, error) {
 	planet, err := a.store.Planet.GetOneByID(ctx, planetID)
 	if err != nil {
-		log.Println("app.planet.GetOneByID.Store.Planet.GetOneByID", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.GetOneByID.Store.Planet.GetOneByID"}).Error(err)
 		return nil, err
 	}
 
 	films, err := a.store.Film.GetFilmsByPlanetIDs(ctx, []int64{planet.ID})
 	if err != nil {
-		log.Println("app.planet.GetOneByID.Store.Film.GetFilmsByPlanetIDs", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.GetOneByID.Store.Film.GetFilmsByPlanetIDs"}).Error(err)
 		return nil, err
 	}
 
@@ -134,7 +134,7 @@ func (a *appImpl) GetOneByID(ctx context.Context, planetID int64) (*planetModel.
 func (a *appImpl) GetAllPlanets(ctx context.Context, page, offset int64, name string) ([]*planetModel.PlanetDB, error) {
 	planets, err := a.store.Planet.GetAll(ctx, page, offset, name)
 	if err != nil {
-		log.Println("app.planet.GetAllPlanets.Store.Planet.GetAll", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.GetAllPlanets.Store.Planet.GetAll"}).Error(err)
 		return nil, err
 	}
 
@@ -149,7 +149,7 @@ func (a *appImpl) GetAllPlanets(ctx context.Context, page, offset int64, name st
 
 	films, err := a.store.Film.GetFilmsByPlanetIDs(ctx, planetIDs)
 	if err != nil {
-		log.Println("app.planet.GetAllPlanets.Store.Film.GetFilmsByPlanetIDs", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.GetAllPlanets.Store.Film.GetFilmsByPlanetIDs"}).Error(err)
 		return nil, err
 	}
 
@@ -167,13 +167,13 @@ func (a *appImpl) GetAllPlanets(ctx context.Context, page, offset int64, name st
 func (a *appImpl) Delete(ctx context.Context, planetID int64) error {
 	planet, err := a.store.Planet.GetOneByID(ctx, planetID)
 	if err != nil {
-		log.Println("app.planet.Delete.Store.Planet.GetOneByID", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.Delete.Store.Planet.GetOneByID"}).Error(err)
 		return err
 	}
 
 	err = a.store.Planet.Delete(ctx, planet.ID)
 	if err != nil {
-		log.Println("app.planet.Delete.Store.Planet.Delete", err.Error())
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.Delete.Store.Planet.Delete"}).Error(err)
 		return err
 	}
 	return nil
