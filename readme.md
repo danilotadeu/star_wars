@@ -71,7 +71,7 @@ O código está organizado da seguinte forma:
     - **migrations**: SQLs para as `migrations`
 - **docs**: arquivos swagger
 - **log**: arquivos de logs
-- **api**: path com as configuraçoes das rotas e handlers da api rest
+- **api**: path com as configurações das rotas e handlers da api rest
 - **app**: path com as regras de negócio
 - **imports**: path com o comando de importação
 - **model**: representações dos modelos
