@@ -40,6 +40,12 @@ const docTemplate = `{
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query"
                     }
                 ],
                 "responses": {

@@ -115,6 +115,7 @@ func (p *apiImpl) planetDelete(c *fiber.Ctx) error {
 // @Produce      json
 // @Param page query int false "page"
 // @Param limit query int false "limit"
+// @Param name query string false "name"
 // @Success      200  {object}  planetModel.ResponsePlanets
 // @Failure      400  {object}  errorsP.ErrorsResponse
 // @Failure      404  {object}  errorsP.ErrorsResponse
