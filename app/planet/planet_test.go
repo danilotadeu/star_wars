@@ -94,13 +94,13 @@ func TestCreatePlanetsAndFilms(t *testing.T) {
 			},
 			expectedErr: nil,
 		},
-		"should return error when get planets": {
+		"should throw error when get planets": {
 			prepareMock: func(planetStore *mockStorePlanet.MockStore, filmStore *mockStoreFilm.MockStore) {
 				planetStore.EXPECT().GetPlanets(gomock.Any()).Return(nil, fmt.Errorf("error"))
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when get one": {
+		"should throw error when get one": {
 			prepareMock: func(planetStore *mockStorePlanet.MockStore, filmStore *mockStoreFilm.MockStore) {
 				planetStore.EXPECT().GetPlanets(gomock.Any()).Return([]planetModel.ResultPlanet{
 					{
@@ -122,7 +122,7 @@ func TestCreatePlanetsAndFilms(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when save planet": {
+		"should throw error when save planet": {
 			prepareMock: func(planetStore *mockStorePlanet.MockStore, filmStore *mockStoreFilm.MockStore) {
 				planetStore.EXPECT().GetPlanets(gomock.Any()).Return([]planetModel.ResultPlanet{
 					{
@@ -144,7 +144,7 @@ func TestCreatePlanetsAndFilms(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when save films": {
+		"should throw error when save films": {
 			prepareMock: func(planetStore *mockStorePlanet.MockStore, filmStore *mockStoreFilm.MockStore) {
 				planetStore.EXPECT().GetPlanets(gomock.Any()).Return([]planetModel.ResultPlanet{
 					{
@@ -266,7 +266,7 @@ func TestSaveFilms(t *testing.T) {
 			},
 			expectedErr: nil,
 		},
-		"should return error when save film": {
+		"should throw error when save film": {
 			inputFilms:    []string{"1", "2"},
 			inputPlanetID: 5,
 			prepareMock: func(filmStore *mockStoreFilm.MockStore) {
@@ -283,7 +283,7 @@ func TestSaveFilms(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when get films": {
+		"should throw error when get films": {
 			inputFilms:    []string{"1", "2"},
 			inputPlanetID: 5,
 			prepareMock: func(filmStore *mockStoreFilm.MockStore) {
@@ -291,7 +291,7 @@ func TestSaveFilms(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when get one": {
+		"should throw error when get one": {
 			inputFilms:    []string{"1", "2"},
 			inputPlanetID: 5,
 			prepareMock: func(filmStore *mockStoreFilm.MockStore) {
@@ -307,7 +307,7 @@ func TestSaveFilms(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when get film with planet": {
+		"should throw error when get film with planet": {
 			inputFilms:    []string{"1", "2"},
 			inputPlanetID: 5,
 			prepareMock: func(filmStore *mockStoreFilm.MockStore) {
@@ -326,7 +326,7 @@ func TestSaveFilms(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when save film with planet": {
+		"should throw error when save film with planet": {
 			inputFilms:    []string{"1", "2"},
 			inputPlanetID: 5,
 			prepareMock: func(filmStore *mockStoreFilm.MockStore) {
@@ -460,7 +460,7 @@ func TestGetAllPlanets(t *testing.T) {
 			expectedPlanets: nil,
 			expectedErr:     planetModel.ErrorPlanetNotFound,
 		},
-		"should return error when get all planets": {
+		"should throw error when get all planets": {
 			inputPage:   0,
 			inputOffset: 5,
 			inputName:   "Planet 1",
@@ -470,7 +470,7 @@ func TestGetAllPlanets(t *testing.T) {
 			expectedPlanets: nil,
 			expectedErr:     fmt.Errorf("error"),
 		},
-		"should return error when get films by planet ids": {
+		"should throw error when get films by planet ids": {
 			inputPage:   0,
 			inputOffset: 5,
 			inputName:   "Planet 1",
@@ -532,14 +532,14 @@ func TestDelete(t *testing.T) {
 			},
 			expectedErr: nil,
 		},
-		"should return error when get a planet by id": {
+		"should throw error when get a planet by id": {
 			inputPlanet: 1,
 			prepareMock: func(planetStore *mockStorePlanet.MockStore) {
 				planetStore.EXPECT().GetOneByID(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("error"))
 			},
 			expectedErr: fmt.Errorf("error"),
 		},
-		"should return error when delete a planet by id": {
+		"should throw error when delete a planet by id": {
 			inputPlanet: 1,
 			prepareMock: func(planetStore *mockStorePlanet.MockStore) {
 				planetStore.EXPECT().GetOneByID(gomock.Any(), gomock.Any()).Return(&planetModel.PlanetDB{
@@ -646,7 +646,7 @@ func TestGetOneByID(t *testing.T) {
 			expectedPlanet: &planetExpected,
 			expectedErr:    nil,
 		},
-		"should return error when get a planet by id": {
+		"should throw error when get a planet by id": {
 			inputPlanet: 1,
 			prepareMock: func(planetStore *mockStorePlanet.MockStore, filmStore *mockStoreFilm.MockStore) {
 				planetStore.EXPECT().GetOneByID(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("error"))
@@ -654,7 +654,7 @@ func TestGetOneByID(t *testing.T) {
 			expectedPlanet: nil,
 			expectedErr:    fmt.Errorf("error"),
 		},
-		"should return error when get the films by planet id": {
+		"should throw error when get the films by planet id": {
 			inputPlanet: 1,
 			prepareMock: func(planetStore *mockStorePlanet.MockStore, filmStore *mockStoreFilm.MockStore) {
 				planetStore.EXPECT().GetOneByID(gomock.Any(), gomock.Any()).Return(&planetModel.PlanetDB{
@@ -692,6 +692,53 @@ func TestGetOneByID(t *testing.T) {
 			// then
 			assert.Equal(t, cs.expectedErr, err)
 			assert.Equal(t, planetDB, cs.expectedPlanet)
+
+		})
+	}
+}
+
+func TestGetTotalPlanets(t *testing.T) {
+	var total int64 = 1
+	cases := map[string]struct {
+		prepareMock   func(planetStore *mockStorePlanet.MockStore)
+		expectedTotal *int64
+		expectedErr   error
+	}{
+		"should return a total of planets": {
+			prepareMock: func(planetStore *mockStorePlanet.MockStore) {
+				planetStore.EXPECT().GetTotalPlanets(gomock.Any()).Return(&total, nil)
+			},
+			expectedTotal: &total,
+			expectedErr:   nil,
+		},
+		"should throw error when get a total": {
+			prepareMock: func(planetStore *mockStorePlanet.MockStore) {
+				planetStore.EXPECT().GetTotalPlanets(gomock.Any()).Return(nil, fmt.Errorf("error"))
+			},
+			expectedTotal: nil,
+			expectedErr:   fmt.Errorf("error"),
+		},
+	}
+
+	for name, cs := range cases {
+		t.Run(name, func(t *testing.T) {
+			// given
+			ctrl, ctx := gomock.WithContext(context.Background(), t)
+			defer ctrl.Finish()
+
+			planetStoreMock := mockStorePlanet.NewMockStore(ctrl)
+
+			cs.prepareMock(planetStoreMock)
+			app := NewApp(&store.Container{
+				Planet: planetStoreMock,
+			})
+
+			// when
+			planetDB, err := app.GetTotalPlanets(ctx)
+
+			// then
+			assert.Equal(t, cs.expectedErr, err)
+			assert.Equal(t, planetDB, cs.expectedTotal)
 
 		})
 	}

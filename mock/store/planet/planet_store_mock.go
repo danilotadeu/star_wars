@@ -109,6 +109,21 @@ func (mr *MockStoreMockRecorder) GetPlanets(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPlanets", reflect.TypeOf((*MockStore)(nil).GetPlanets), arg0)
 }
 
+// GetTotalPlanets mocks base method.
+func (m *MockStore) GetTotalPlanets(arg0 context.Context) (*int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTotalPlanets", arg0)
+	ret0, _ := ret[0].(*int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTotalPlanets indicates an expected call of GetTotalPlanets.
+func (mr *MockStoreMockRecorder) GetTotalPlanets(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTotalPlanets", reflect.TypeOf((*MockStore)(nil).GetTotalPlanets), arg0)
+}
+
 // SavePlanet mocks base method.
 func (m *MockStore) SavePlanet(arg0 context.Context, arg1 planet.Planet) (*int64, error) {
 	m.ctrl.T.Helper()

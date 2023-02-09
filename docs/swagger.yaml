@@ -5,6 +5,15 @@ definitions:
       message:
         type: string
     type: object
+  generic.Pagination:
+    properties:
+      count:
+        type: integer
+      next_page:
+        type: integer
+      previous_page:
+        type: integer
+    type: object
   planet.Film:
     properties:
       created_at:
@@ -37,6 +46,15 @@ definitions:
       terrain:
         type: string
     type: object
+  planet.ResponsePlanets:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/planet.PlanetDB'
+        type: array
+      pagination:
+        $ref: '#/definitions/generic.Pagination'
+    type: object
 info:
   contact: {}
   title: Star Wars API
@@ -62,9 +80,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/planet.PlanetDB'
-            type: array
+            $ref: '#/definitions/planet.ResponsePlanets'
         "400":
           description: Bad Request
           schema:

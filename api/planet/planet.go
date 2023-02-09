@@ -8,6 +8,7 @@ import (
 
 	"github.com/danilotadeu/star_wars/app"
 	errorsP "github.com/danilotadeu/star_wars/model/errors_handler"
+	genericModel "github.com/danilotadeu/star_wars/model/generic"
 	planetModel "github.com/danilotadeu/star_wars/model/planet"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
@@ -114,7 +115,7 @@ func (p *apiImpl) planetDelete(c *fiber.Ctx) error {
 // @Produce      json
 // @Param page query int false "page"
 // @Param limit query int false "limit"
-// @Success      200  {object}  []planetModel.PlanetDB
+// @Success      200  {object}  planetModel.ResponsePlanets
 // @Failure      400  {object}  errorsP.ErrorsResponse
 // @Failure      404  {object}  errorsP.ErrorsResponse
 // @Failure      500  {object}  errorsP.ErrorsResponse
@@ -161,9 +162,37 @@ func (p *apiImpl) planets(c *fiber.Ctx) error {
 		}
 
 		return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
-			Message: "Por favor tente mais tarde...",
+			Message: "Aconteceu um erro interno..",
 		})
 	}
 
-	return c.Status(http.StatusOK).JSON(planets)
+	nextPage, previousPage := genericModel.MakePagination(ipage)
+
+	_, err = p.apps.Planet.GetAllPlanets(ctx, *nextPage, ilimit, name)
+	if err != nil {
+		if !errors.Is(err, planetModel.ErrorPlanetNotFound) {
+			logrus.WithFields(logrus.Fields{"trace": "api.planet.planets.GetAllPlanets_1"}).Error(err)
+			return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
+				Message: "Aconteceu um erro interno..",
+			})
+		}
+		nextPage = nil
+	}
+
+	total, err := p.apps.Planet.GetTotalPlanets(ctx)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{"trace": "api.planet.planets.GetTotalPlanets"}).Error(err)
+		return c.Status(http.StatusInternalServerError).JSON(errorsP.ErrorsResponse{
+			Message: "Aconteceu um erro interno..",
+		})
+	}
+
+	return c.Status(http.StatusOK).JSON(planetModel.ResponsePlanets{
+		Data: planets,
+		ResponsePagination: genericModel.Pagination{
+			Count:        *total,
+			NextPage:     nextPage,
+			PreviousPage: previousPage,
+		},
+	})
 }

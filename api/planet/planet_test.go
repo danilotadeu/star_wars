@@ -32,7 +32,7 @@ func TestHandlerDelete(t *testing.T) {
 			},
 			ExpectedStatusCode: http.StatusNoContent,
 		},
-		"should return error with parse int": {
+		"should throw error with parse int": {
 			InputParamID: "xpto",
 			ExpectedErr:  nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
@@ -47,7 +47,7 @@ func TestHandlerDelete(t *testing.T) {
 			},
 			ExpectedStatusCode: http.StatusNotFound,
 		},
-		"should return error": {
+		"should throw error": {
 			InputParamID: "1",
 			ExpectedErr:  nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
@@ -105,7 +105,7 @@ func TestHandlerGetPlanetByID(t *testing.T) {
 			},
 			ExpectedStatusCode: http.StatusOK,
 		},
-		"should return error with parse int": {
+		"should throw error with parse int": {
 			InputParamID: "xpto",
 			ExpectedErr:  nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
@@ -120,7 +120,7 @@ func TestHandlerGetPlanetByID(t *testing.T) {
 			},
 			ExpectedStatusCode: http.StatusNotFound,
 		},
-		"should return error": {
+		"should throw error": {
 			InputParamID: "1",
 			ExpectedErr:  nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
@@ -178,17 +178,62 @@ func TestHandlerGetPlanets(t *testing.T) {
 						Terrain: "Terrain 1",
 					},
 				}, nil)
+				mockPlanetApp.EXPECT().GetAllPlanets(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, planetModel.ErrorPlanetNotFound)
+				var total int64 = 1
+				mockPlanetApp.EXPECT().GetTotalPlanets(gomock.Any()).Return(&total, nil)
 			},
 			ExpectedStatusCode: http.StatusOK,
 		},
-		"should return error with parse int page": {
+		"should throw error when get planets to paginate": {
+			InputPage:   "1",
+			InputLimit:  "10",
+			ExpectedErr: nil,
+			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
+				mockPlanetApp.EXPECT().GetAllPlanets(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]*planetModel.PlanetDB{
+					{
+						ID:      1,
+						Name:    "Planet 1",
+						Climate: "Climate 1",
+						Terrain: "Terrain 1",
+					},
+				}, nil)
+				mockPlanetApp.EXPECT().GetAllPlanets(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("error"))
+			},
+			ExpectedStatusCode: http.StatusInternalServerError,
+		},
+		"should throw error when get total planets": {
+			InputPage:   "1",
+			InputLimit:  "10",
+			ExpectedErr: nil,
+			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
+				mockPlanetApp.EXPECT().GetAllPlanets(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]*planetModel.PlanetDB{
+					{
+						ID:      1,
+						Name:    "Planet 1",
+						Climate: "Climate 1",
+						Terrain: "Terrain 1",
+					},
+				}, nil)
+				mockPlanetApp.EXPECT().GetAllPlanets(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]*planetModel.PlanetDB{
+					{
+						ID:      1,
+						Name:    "Planet 1",
+						Climate: "Climate 1",
+						Terrain: "Terrain 1",
+					},
+				}, nil)
+				mockPlanetApp.EXPECT().GetTotalPlanets(gomock.Any()).Return(nil, fmt.Errorf("error"))
+			},
+			ExpectedStatusCode: http.StatusInternalServerError,
+		},
+		"should throw error with parse int page": {
 			ExpectedErr: nil,
 			InputPage:   "xpto",
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 			},
 			ExpectedStatusCode: http.StatusBadRequest,
 		},
-		"should return error with parse int limit": {
+		"should throw error with parse int limit": {
 			ExpectedErr: nil,
 			InputLimit:  "xpto",
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
@@ -202,7 +247,7 @@ func TestHandlerGetPlanets(t *testing.T) {
 			},
 			ExpectedStatusCode: http.StatusNotFound,
 		},
-		"should return error": {
+		"should throw error": {
 			ExpectedErr: nil,
 			PrepareMockApp: func(mockPlanetApp *mockAppPlanet.MockApp) {
 				mockPlanetApp.EXPECT().GetAllPlanets(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("error"))

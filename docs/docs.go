@@ -46,10 +46,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/planet.PlanetDB"
-                            }
+                            "$ref": "#/definitions/planet.ResponsePlanets"
                         }
                     },
                     "400": {
@@ -178,6 +175,20 @@ const docTemplate = `{
                 }
             }
         },
+        "generic.Pagination": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "next_page": {
+                    "type": "integer"
+                },
+                "previous_page": {
+                    "type": "integer"
+                }
+            }
+        },
         "planet.Film": {
             "type": "object",
             "properties": {
@@ -224,6 +235,20 @@ const docTemplate = `{
                 },
                 "terrain": {
                     "type": "string"
+                }
+            }
+        },
+        "planet.ResponsePlanets": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/planet.PlanetDB"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/generic.Pagination"
                 }
             }
         }

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	filmModel "github.com/danilotadeu/star_wars/model/film"
+	genericModel "github.com/danilotadeu/star_wars/model/generic"
 )
 
 var ErrorPlanetNotFound = errors.New("Planet not found")
@@ -41,4 +42,13 @@ type PlanetDB struct {
 	CreatedAt time.Time        `json:"created_at"`
 	DeletedAt *time.Time       `json:"deleted_at,omitempty"`
 	Films     []filmModel.Film `json:"films,omitempty"`
+}
+
+type PlanetsTotal struct {
+	Total int64 `json:"total"`
+}
+
+type ResponsePlanets struct {
+	Data               []*PlanetDB             `json:"data"`
+	ResponsePagination genericModel.Pagination `json:"pagination"`
 }

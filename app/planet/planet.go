@@ -15,6 +15,7 @@ type App interface {
 	GetOneByID(ctx context.Context, planetID int64) (*planetModel.PlanetDB, error)
 	GetAllPlanets(ctx context.Context, page, offset int64, name string) ([]*planetModel.PlanetDB, error)
 	Delete(ctx context.Context, planetID int64) error
+	GetTotalPlanets(ctx context.Context) (*int64, error)
 }
 
 type appImpl struct {
@@ -177,4 +178,13 @@ func (a *appImpl) Delete(ctx context.Context, planetID int64) error {
 		return err
 	}
 	return nil
+}
+
+func (a *appImpl) GetTotalPlanets(ctx context.Context) (*int64, error) {
+	total, err := a.store.Planet.GetTotalPlanets(ctx)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{"trace": "app.planet.GetTotalPlanets.Store.Planet.GetTotalPlanets"}).Error(err)
+		return nil, err
+	}
+	return total, nil
 }

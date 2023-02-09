@@ -24,6 +24,7 @@ type Store interface {
 	GetOneByID(ctx context.Context, id int64) (*planetModel.PlanetDB, error)
 	GetAll(ctx context.Context, page, limit int64, name string) ([]*planetModel.PlanetDB, error)
 	Delete(ctx context.Context, id int64) error
+	GetTotalPlanets(ctx context.Context) (*int64, error)
 }
 
 type storeImpl struct {
@@ -235,4 +236,28 @@ func (a *storeImpl) Delete(ctx context.Context, id int64) error {
 	}
 
 	return nil
+}
+
+func (a *storeImpl) GetTotalPlanets(ctx context.Context) (*int64, error) {
+	res, err := a.db.Query("SELECT COUNT(*) FROM planet WHERE deleted_at IS NULL")
+	if err != nil {
+		logrus.WithFields(logrus.Fields{"trace": "store.planet.getTotalPlanets.Query"}).Error(err)
+		return nil, err
+	}
+	defer res.Close()
+
+	if res.Next() {
+		var planet planetModel.PlanetsTotal
+		err := res.Scan(
+			&planet.Total,
+		)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{"trace": "store.planet.getTotalPlanets.Scan"}).Error(err)
+			return nil, err
+		}
+
+		return &planet.Total, nil
+	} else {
+		return nil, planetModel.ErrorPlanetNotFound
+	}
 }
