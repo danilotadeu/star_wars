@@ -143,9 +143,9 @@ func (a *appImpl) GetAllPlanets(ctx context.Context, page, offset int64, name st
 		return nil, planetModel.ErrorPlanetNotFound
 	}
 
-	planetIDs := make([]int64, 0, len(planets))
-	for _, planet := range planets {
-		planetIDs = append(planetIDs, planet.ID)
+	planetIDs := make([]int64, len(planets))
+	for idx, planet := range planets {
+		planetIDs[idx] = planet.ID
 	}
 
 	films, err := a.store.Film.GetFilmsByPlanetIDs(ctx, planetIDs)
